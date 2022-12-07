@@ -1,0 +1,1 @@
+f=require('fs');i=f.readFileSync('i','utf8');a=i.split`\n`;t=0;console.log(a.reduce((p,c,i)=>i==a.length-1?p.reduce((a,b)=>a+b):c?(t+=+c,p):(m=[...p,t].sort((a,b)=>a-b).slice(-3),t=0,m),[0,0,0]));
