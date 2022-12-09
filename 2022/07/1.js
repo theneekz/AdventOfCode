@@ -73,9 +73,11 @@ As the outermost directory, / contains every file. Its total size is 48381165, t
 To begin, find all of the directories with a total size of at most 100000, then calculate the sum of their total sizes. In the example above, these directories are a and e; the sum of their total sizes is 95437 (94853 + 584). (As in this example, this process can count files more than once!)
 
 Find all of the directories with a total size of at most 100000. What is the sum of the total sizes of those directories?
+
+Your puzzle answer was 1334506.
 */
 const { getInputArray, print } = require("../../utils");
-const input = getInputArray(__dirname);
+const input = getInputArray(__dirname, '/input.txt');
 const start = Date.now();
 
 // Initialize virtual directory obj
@@ -89,7 +91,7 @@ const main = () => {
   // Build directory, adding to dirSizes as you go
   buildDirectory();
   // Return sum of total sizes of the desired directories
-  return sumDirectoriesUnderLimit(100_000);
+  return sumDirectoriesUnderLimit(100000);
 };
 
 function buildDirectory() {
@@ -99,31 +101,26 @@ function buildDirectory() {
     const isChangeDirectory = commandSlice === "$ cd";
     const isList = commandSlice === "$ ls";
     if (isChangeDirectory) {
-      console.log("\n\n--isChangeDirectory--");
       const dir = line.slice(5);
       // Process change directory
       changeDirectory(dir);
     } else if (isList) {
-      console.log("\n\n--isList--");
       continue;
     } else {
-      console.log("\n\n--is file or dir to add--");
-      // Else add file with size or initialize empty dir
+      // Add file with size or initialize empty dir
       const pathRef = buildPathReference();
-      addToDirReference(line, pathRef);
+      addToVirtualDir(line, pathRef);
     }
   }
 }
 
 function changeDirectory(path) {
-  console.log("changing directory to:", path);
   if (path == "/") {
     // Go back to root directory
     fullPath = ["/"];
   } else if (path == "..") {
     // Remove current so that the parent is the latest in the array
     fullPath.pop();
-    if (fullPath.length === 0) throw "Cannot go past '/'";
   } else {
     // Tack on child directory to the current path array
     fullPath.push(path);
@@ -136,18 +133,16 @@ function buildPathReference() {
     for (const dir of fullPath) {
       ref = ref[dir];
     }
-    console.log("built path ref:", ref);
     return ref;
   } catch (error) {
-    throw `Cannot build path for ${str}: ${error}`;
+    throw `Cannot build path ref: ${error}`;
   }
 }
 
-function addToDirReference(str, ref) {
-  console.log("adding to dir ref:", str);
+function addToVirtualDir(str, ref) {
   const [leftStr, rightStr] = str.split(" ");
-  const isDir = leftStr == "dir";
-  if (isDir) {
+  const isDirectory = leftStr == "dir";
+  if (isDirectory) {
     // Initializes empty object for dir name
     ref[rightStr] = {};
   } else {
@@ -160,22 +155,22 @@ function addToDirReference(str, ref) {
 }
 
 function updateSizes(fileSize) {
+  let currentPath = ''
   for (const dir of fullPath) {
-    if (!dirSizes[dir]) dirSizes[dir] = 0;
-    dirSizes[dir] += fileSize;
+    currentPath += `/${dir}`
+    if (!dirSizes[currentPath]) dirSizes[currentPath] = 0
+    dirSizes[currentPath] += fileSize;
   }
 }
 
 function sumDirectoriesUnderLimit(limit) {
   let sum = 0;
-  for (const [dir, size] of Object.entries(dirSizes)) {
-    if (size <= limit) sum += size;
+  for (const [key, val] of Object.entries(dirSizes)) {
+    if (val < limit) sum += val;
   }
   return sum;
 }
 
-console.log(main()); //1062058 too low
+console.log(main());
 
-// print(virtualDirectory);
-// print(dirSizes);
 console.log("Time", Date.now() - start, "ms");
