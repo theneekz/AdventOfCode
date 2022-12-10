@@ -2,10 +2,10 @@
 
 */
 const { getInputArray } = require("../../utils");
-const input = getInputArray(__dirname, "/test1.txt");
 const start = Date.now();
 
 function main() {
+  const input = getInputArray(__dirname, "/test1.txt");
 
 }
 
