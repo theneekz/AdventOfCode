@@ -66,6 +66,7 @@ function getTreeScore(grid, x, y) {
       break;
     }
   }
+
   let leftScore = 0;
   for (let i = x - 1; i >= 0; i--) {
     leftScore++;
