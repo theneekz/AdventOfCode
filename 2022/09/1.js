@@ -245,81 +245,96 @@ Your puzzle answer was 5695.
 const { getInputArray } = require("../../utils");
 const start = Date.now();
 
+/**
+ * With instructions of moves for 2 knotted rope, this calculates how many positions the tail visits.
+ * @function main
+ * @returns {number} coordinates visited by the tail at least once.
+ */
 function main() {
   const input = getInputArray(__dirname, "/input.txt");
-  // Initialize object to track stringified visited coords
+  /**
+   * x: horizontal position (can go negative) of a knot on a rope.
+   * y: vertical position (can go negative) of a knot on a rope.
+   * @typedef Coordinates
+   * @type {[x: number, y: number]}
+   */
+  /**
+   * Object to track where the tail has been. Keys are stringified Coordinates.
+   * Values are number of times the tail has visited that coordinate.
+   * @type {{Coordinates: number}}
+   */
   const visited = { "[0,0]": 1 };
-  // Coords: "[x, y]"
-  //   - x = horizontal direction (can go negative)
-  //   - y = vertical direction (can go negative)
-  //   - starts at [0,0]
+
+  /**@type {Coordinates[]} */
   let [head, tail] = [
     [0, 0],
     [0, 0],
   ];
-  // Make queue of instructions
-  const queue = makeQueue(input);
-  // For each direction in queue
-  while (queue.length) {
-    const dir = queue.shift();
-    const oldHead = head;
-    // Update Head of rope
-    head = moveHead(dir, oldHead);
-    const [headX, headY] = head;
-    const [tailX, tailY] = tail;
-    if (Math.abs(headX - tailX) > 1 || Math.abs(headY - tailY) > 1) {
-      // Update Tail of rope
-      tail = moveTail(tail, head, oldHead);
-      // Either update # of visits to this coord or initialize count to 1
-      visited[convert(tail)] = visited[convert(tail)]++ || 1;
+  for (const line of input) {
+    const [direction, amount] = line.split(" ");
+    for (let i = Number(amount); i > 0; i--) {
+      head = moveHead(direction, head);
+      const [headX, headY] = head;
+      const [tailX, tailY] = tail;
+      const knotsAreTooFar =
+        Math.abs(headX - tailX) > 1 || Math.abs(headY - tailY) > 1;
+      if (knotsAreTooFar) {
+        tail = moveTail(tail, head);
+        // Increment # of visits to this coord or initialize count to 1
+        visited[convert(tail)] = visited[convert(tail)]++ || 1;
+      }
     }
   }
   // Return the number of keys (coords) in the visited object
   return Object.keys(visited).length;
 }
 
-function makeQueue(inputArr) {
-  // Initialize queue of moves for the rope
-  const queue = [];
-  // Loop through instructions
-  for (const line of inputArr) {
-    const [dir, amount] = line.split(" ");
-    for (let i = Number(amount); i > 0; i--) {
-      // Adding direction to queue
-      queue.push(dir);
-    }
-  }
-  return queue;
-}
-
-function moveHead(dir, oldHead) {
+/**
+ * Only moves the Head coordinates once based on a direction.
+ * @function moveHead
+ * @param {string} direction - 'U', 'D', 'L', 'R'.
+ * @param {Coordinates} oldHead - coordinates of the old Head position.
+ * @returns {Coordinates} coordinates of the new Head position.
+ */
+function moveHead(direction, oldHead) {
+  /**
+   * Using a direction as a key, access a function that when given a coordinate returns it's new position after moving one time.
+   * @type {{string : function}}
+   */
   const moves = {
     R: ([x, y]) => [x + 1, y],
     L: ([x, y]) => [x - 1, y],
     U: ([x, y]) => [x, y + 1],
     D: ([x, y]) => [x, y - 1],
   };
-
-  return moves[dir](oldHead);
+  // Return the result of passing oldHead coordinates into the U/D/R/L function
+  return moves[direction](oldHead);
 }
 
-// Given a new head, move the tail
-function moveTail(oldTail, newHead, oldHead) {
+/**
+ * Should only be used when the Head has moved and the Tail needs to follow/move.
+ * If tail and head are same, stay the same.
+ * Else if head is bigger, add one to tail.
+ * Else subtract one from tail.
+ * @function moveTail
+ * @param {Coordinates} oldTail - coordinates of the old Tail position.
+ * @param {Coordinates} newHead - coordinates of the new Head position.
+ * @returns {Coordinates} coordinates of the new Tail position.
+ */
+function moveTail(oldTail, newHead) {
   const [tailX, tailY] = oldTail;
   const [headX, headY] = newHead;
-  const isHorizontal = tailX !== headX;
-  const isVertical = tailY !== headY;
-  const isDiagonal = isHorizontal && isVertical;
-  // If diagonal, tail is now where oldHead is
-  if (isDiagonal) return oldHead;
-  // If horizontal only update x
-  if (isHorizontal) return [headX > tailX ? tailX + 1 : tailX - 1, tailY];
-  // If vertical only update y
-  return [tailX, headY > tailY ? tailY + 1 : tailY - 1];
+  const newX = tailX == headX ? tailX : headX > tailX ? tailX + 1 : tailX - 1;
+  const newY = tailY == headY ? tailY : headY > tailY ? tailY + 1 : tailY - 1;
+  return [newX, newY];
 }
 
-function convert(coord) {
-  return JSON.stringify(coord);
+/**
+ * Stringify coordinates so that they can be used as keys in an object.
+ * @param {Coordinates} coordinates - array of numbers giving position of a knot.
+ */
+function convert(coordinates) {
+  return JSON.stringify(coordinates);
 }
 
 console.log(main());
