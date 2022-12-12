@@ -77,7 +77,7 @@ Find all of the directories with a total size of at most 100000. What is the sum
 Your puzzle answer was 1334506.
 */
 const { getInputArray, print } = require("../../utils");
-const input = getInputArray(__dirname, '/input.txt');
+const input = getInputArray(__dirname);
 const start = Date.now();
 
 // Initialize virtual directory obj
@@ -91,7 +91,8 @@ const main = () => {
   // Build directory, adding to dirSizes as you go
   buildDirectory();
   // Return sum of total sizes of the desired directories
-  return sumDirectoriesUnderLimit(100000);
+  // return sumDirectoriesUnderLimit(100000); // part 1
+  return findSmallestDirToDeleteForUpdate(); // part 2
 };
 
 function buildDirectory() {
@@ -155,20 +156,43 @@ function addToVirtualDir(str, ref) {
 }
 
 function updateSizes(fileSize) {
-  let currentPath = ''
+  let currentPath = "";
   for (const dir of fullPath) {
-    currentPath += `/${dir}`
-    if (!dirSizes[currentPath]) dirSizes[currentPath] = 0
+    currentPath += `/${dir}`;
+    if (!dirSizes[currentPath]) dirSizes[currentPath] = 0;
     dirSizes[currentPath] += fileSize;
   }
 }
 
+// For part 1
 function sumDirectoriesUnderLimit(limit) {
   let sum = 0;
   for (const [key, val] of Object.entries(dirSizes)) {
     if (val < limit) sum += val;
   }
   return sum;
+}
+
+function findSmallestDirToDeleteForUpdate() {
+  const amountToDelete = getAmountToDelete();
+  return getSizeOfDirToDelete(amountToDelete);
+}
+
+function getAmountToDelete() {
+  const MAX_MEMORY_SIZE = 70_000_000;
+  const UPDATE_SIZE = 30_000_000;
+  const CURRENT_MEMORY_SIZE = dirSizes["//"];
+  const CURRENT_FREE_MEMORY_SIZE = MAX_MEMORY_SIZE - CURRENT_MEMORY_SIZE;
+  const TARGET_TO_DELETE = UPDATE_SIZE - CURRENT_FREE_MEMORY_SIZE;
+  return TARGET_TO_DELETE;
+}
+
+function getSizeOfDirToDelete(target) {
+  let current = Infinity;
+  for (const value of Object.values(dirSizes)) {
+    if (value < current && value > target) current = value;
+  }
+  return current;
 }
 
 console.log(main());
