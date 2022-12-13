@@ -4,6 +4,6 @@ read -p 'Day: ' dayNum
 
 mkdir $dayNum
 cd $dayNum
-cp ../../newDayTemplate.js 1.js
+cp -a ../../newDayTemplate/ ./
 touch input.txt
 touch test1.txt
