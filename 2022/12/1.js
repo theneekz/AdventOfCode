@@ -27,55 +27,11 @@ In the above diagram, the symbols indicate whether the path exits each square mo
 This path reaches the goal in 31 steps, the fewest possible.
 
 What is the fewest steps required to move from your current position to the location that should get the best signal?
+
+Your puzzle answer was 408.
 */
 const { getInputArray } = require("../../utils");
 const start = Date.now();
-
-class WeightedGraph {
-  constructor() {
-    this.adjacencyList = {};
-  }
-  addVertex(v) {
-    if (!this.adjacencyList[v]) this.adjacencyList[v] = [];
-  }
-  addEdge(v1, v2) {
-    this.addVertex(v1);
-    this.addVertex(v2);
-    this.adjacencyList[v1].push(v2); // This path is unidirectional
-  }
-  shortestPath(startCoord, endCoord) {
-    // queue of coords to visit
-    let queue = [startCoord];
-    // object of visitied coords
-    let visitedCoords = { [startCoord]: true };
-    // object of coord & predecessors for a coord
-    let predecessors = {};
-    while (queue.length) {
-      let current = queue.shift();
-      const currentNeighbors = this.adjacencyList[current];
-      for (const neighbor of currentNeighbors) {
-        if (visitedCoords[neighbor]) {
-          continue;
-        }
-        visitedCoords[neighbor] = true;
-        // Found the end to be one of the current node's neighbors
-        if (neighbor === endCoord) {
-          let result = [neighbor];
-          while (current !== startCoord) {
-            result.push(current);
-            current = predecessors[current];
-          }
-          result.push(current); // at this point current should be the start coord
-          return result;
-        }
-        // Didn't find the end so we set the predecessor of this neighbor to be the current neighbor
-        predecessors[neighbor] = current;
-        // Come back to the neighbor later in the queue to check if it leads to the end
-        queue.push(neighbor);
-      }
-    }
-  }
-}
 
 function main() {
   const input = getInputArray(__dirname, "/input.txt").map((line) =>
@@ -134,6 +90,52 @@ function main() {
   });
   // The length is all the coords visited, not the path
   return graph.shortestPath(start, end).length - 1;
+}
+
+class WeightedGraph {
+  constructor() {
+    this.adjacencyList = {};
+  }
+  addVertex(v) {
+    if (!this.adjacencyList[v]) this.adjacencyList[v] = [];
+  }
+  addEdge(v1, v2) {
+    this.addVertex(v1);
+    this.addVertex(v2);
+    this.adjacencyList[v1].push(v2); // This path is unidirectional
+  }
+  shortestPath(startCoord, endCoord) {
+    // queue of coords to visit
+    let queue = [startCoord];
+    // object of visitied coords
+    let visitedCoords = { [startCoord]: true };
+    // object of coord & predecessors for a coord
+    let predecessors = {};
+    while (queue.length) {
+      let current = queue.shift();
+      const currentNeighbors = this.adjacencyList[current];
+      for (const neighbor of currentNeighbors) {
+        if (visitedCoords[neighbor]) {
+          continue;
+        }
+        visitedCoords[neighbor] = true;
+        // Found the end to be one of the current node's neighbors
+        if (neighbor === endCoord) {
+          let result = [neighbor];
+          while (current !== startCoord) {
+            result.push(current);
+            current = predecessors[current];
+          }
+          result.push(current); // at this point current should be the start coord
+          return result;
+        }
+        // Didn't find the end so we set the predecessor of this neighbor to be the current neighbor
+        predecessors[neighbor] = current;
+        // Come back to the neighbor later in the queue to check if it leads to the end
+        queue.push(neighbor);
+      }
+    }
+  }
 }
 
 function getHeight(char) {
