@@ -109,7 +109,7 @@ class WeightedGraph {
     let queue = [startCoord];
     // object of visitied coords
     let visitedCoords = { [startCoord]: true };
-    // object of coord & predecessors for a coord
+    // object of predecessors for a coord
     let predecessors = {};
     while (queue.length) {
       let current = queue.shift();
