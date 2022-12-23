@@ -104,9 +104,9 @@ class WeightedGraph {
   shortestPath(startCoord, endCoord) {
     // queue of coords that will be visited
     let queue = [startCoord];
-    // object of coord, boolean pairs for visitied coords
+    // object for visitied coords
     let visitedCoords = { [startCoord]: true };
-    // object of coord, array pairs for the current shortest predecessors for a coord
+    // object of coord & predecessors for a coord
     let predecessors = {};
     while (queue.length) {
       let current = queue.shift();
@@ -124,8 +124,6 @@ class WeightedGraph {
             current = predecessors[current];
           }
           result.push(current); // at this point should be the start
-          // result.reverse();
-
           return result;
         }
         // Didn't find the end so we set the predecessor of this neighbor to be the current neighbor
