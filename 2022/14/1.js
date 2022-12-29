@@ -112,6 +112,8 @@ Once all 24 units of sand shown above have come to rest, all further sand flows 
 ~..........
 ~..........
 Using your scan, simulate the falling sand. How many units of sand come to rest before sand starts flowing into the abyss below?
+
+Your puzzle answer was 901.
 */
 const { getInputArray } = require("../../utils");
 const start = Date.now();
