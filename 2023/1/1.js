@@ -21,14 +21,16 @@ treb7uchet
 In this example, the calibration values of these four lines are 12, 38, 15, and 77. Adding these together produces 142.
 
 Consider your entire calibration document. What is the sum of all of the calibration values?
+
+Your puzzle answer was 55017.
 */
 const { getInputArray } = require("../../utils");
 const start = Date.now();
 
 function main() {
-  const input = getInputArray(__dirname, "/input.txt");
+  const input = getInputArray(__dirname);
   return input.reduce((p, c) => {
-    const regex = /\d{1}/gm;
+    const regex = /(\d)/gm;
     const digits = c.match(regex);
     const [first, last] = [digits[0], digits[digits.length - 1]];
     const calibration = Number(`${first}${last}`);

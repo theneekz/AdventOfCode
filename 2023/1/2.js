@@ -14,6 +14,8 @@ zoneight234
 In this example, the calibration values are 29, 83, 13, 24, 42, 14, and 76. Adding these together produces 281.
 
 What is the sum of all of the calibration values?
+
+Your puzzle answer was 53539.
  */
 
 const { getInputArray } = require("../../utils");
@@ -34,8 +36,7 @@ function main() {
     nine: 9,
   };
   return input.reduce((p, c) => {
-    const regex =
-      /(?=([\d{1}]|one|two|three|four|five|six|seven|eight|nine))/gm;
+    const regex = /(?=((\d)|one|two|three|four|five|six|seven|eight|nine))/gm;
     const group = c.matchAll(regex);
     const digits = [];
     for (const match of group) {
