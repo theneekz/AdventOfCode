@@ -24,6 +24,8 @@ The Elf would first like to know which games would have been possible if the bag
 In the example above, games 1, 2, and 5 would have been possible if the bag had been loaded with that configuration. However, game 3 would have been impossible because at one point the Elf showed you 20 red cubes at once; similarly, game 4 would also have been impossible because the Elf showed you 15 blue cubes at once. If you add up the IDs of the games that would have been possible, you get 8.
 
 Determine which games would have been possible if the bag had been loaded with only 12 red cubes, 13 green cubes, and 14 blue cubes. What is the sum of the IDs of those games?
+
+Your puzzle answer was 2879.
 */
 const { getInputArray } = require("../../utils");
 const start = Date.now();
@@ -35,28 +37,24 @@ function main() {
     green: 13,
     blue: 14,
   };
-
+  const regex = /(;)|((([(?::)]? (\d+) (\w+))+))?/gm;
   let possibles = [];
 
-  input.map((line) => {
+  input.map((line, i) => {
+    const game = i + 1;
     let isValid = true;
-    const [gameInfo, rest] = line.split(": ");
-    const [unused, id] = gameInfo.split("Game ");
+    const [...matches] = line.matchAll(regex);
 
-    const showings = rest.split("; ");
-    for (const show of showings) {
-      const colorInfo = show.split(", ");
-      for (const str of colorInfo) {
-        const [count, color] = str.split(" ");
+    for (const group of matches.filter((s) => !!s[0])) {
+      const [count, color] = [group[5], group[6]];
 
-        if (limits[color] < Number(count)) {
-          isValid = false;
-          break;
-        }
+      if (Number(count) > limits[color]) {
+        isValid = false;
+        break;
       }
     }
     if (isValid) {
-      possibles.push(id);
+      possibles.push(game);
     }
   });
   return possibles.reduce((p, c) => p + Number(c), 0);
