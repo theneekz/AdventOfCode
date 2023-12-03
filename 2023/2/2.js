@@ -19,38 +19,39 @@ Game 5 needed no fewer than 6 red, 3 green, and 2 blue cubes in the bag.
 The power of a set of cubes is equal to the numbers of red, green, and blue cubes multiplied together. The power of the minimum set of cubes in game 1 is 48. In games 2-5 it was 12, 1560, 630, and 36, respectively. Adding up these five powers produces the sum 2286.
 
 For each game, find the minimum set of cubes that must have been present. What is the sum of the power of these sets?
+
+Your puzzle answer was 65122.
 */
 const { getInputArray } = require("../../utils");
 const start = Date.now();
 
 function main() {
   const input = getInputArray(__dirname);
-
+  const regex = /(;)|((([(?::)]? (\d+) (\w+))+)([,(;)]?))?/gm;
   let possibles = [];
 
   input.map((line) => {
-    const [unused, rest] = line.split(": ");
-    const showings = rest.split("; ");
-    const maxes = {
+    const [...matches] = line.matchAll(regex);
+
+    const maxesInitialState = {
       red: 0,
       green: 0,
       blue: 0,
     };
+    let maxes = { ...maxesInitialState };
 
-    for (const show of showings) {
-      const colorInfo = show.split(", ");
-      for (const str of colorInfo) {
-        let [count, color] = str.split(" ");
-        count = Number(count);
-        maxes[color] = Math.max(count, maxes[color]);
+    for (const group of matches.filter((s) => !!s[0])) {
+      let [count, color, suffix] = [Number(group[5]), group[6], group[7]];
+      maxes[color] = Math.max(count, maxes[color]);
+
+      if (!suffix) {
+        possibles.push(Object.values(maxes).reduce((p, c) => p * c, 1));
+        maxes = { ...maxesInitialState };
       }
     }
-
-    const power = Object.values(maxes).reduce((p, c) => p * c, 1);
-    possibles.push(power);
   });
 
-  return possibles.reduce((p, c) => p + c, 0);
+  return possibles.reduce((p, c) => p + Number(c), 0);
 }
 
 console.log(main());
