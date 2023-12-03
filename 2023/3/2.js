@@ -36,6 +36,8 @@ function main() {
   let input = getInputArray(__dirname);
   input = input.map((line) => line.split(""));
 
+  // Holds coordinates of gears as keys and arrays of numbers ajacent to
+  // coordinates as values. ex: {'[26,1]': [ 846, 624 ]}
   let gears = {};
 
   for (let y = 0; y < input.length; y++) {
@@ -51,11 +53,10 @@ function main() {
 
       while (isNum(line[end])) {
         fullNumber += line[end];
-        end++;
+        end++; // end ultimately is 1 further than it should be for easy slicing
       }
 
       const left = start > 0 ? start - 1 : 0;
-      // right is 1 further than it should be for easier slicing
       const right = end === line.length - 1 ? end : end + 1;
       if (y > 0) {
         // Check up
@@ -86,7 +87,7 @@ function main() {
       }
 
       if (right > end) {
-        // Check right using "end", as right is only meant for easy slices above
+        // Check right using "end", as right is for slicing lines above & below
         const charRight = line[end];
         if (isGear(charRight)) {
           addToGearsMap(fullNumber, gears, y, [end]);
