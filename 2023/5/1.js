@@ -127,6 +127,7 @@ function main() {
   let results = [];
 
   for (const seed of seedsInput) {
+    console.log({ seed });
     let i = Number(seed);
     let queue = [...maps];
     while (queue.length) {
@@ -180,6 +181,8 @@ const parseInput = (inputStr) => {
   temperatureToHumidityInput.shift();
   humidityToLocationInput.shift();
 
+  // fails here
+  console.log("parsed input");
   return {
     seedsInput: IS_PART_TWO ? part2 : seedsInput,
     maps: [
