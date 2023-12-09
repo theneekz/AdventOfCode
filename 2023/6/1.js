@@ -48,8 +48,7 @@ const start = Date.now();
 
 function main() {
   const input = getInputArray(__dirname);
-  const times = input[0].match(/[0-9]+/g);
-  const records = input[1].match(/[0-9]+/g);
+  const [times, records] = input.map((line) => line.match(/\d+/g));
   let errorMargin = 1;
 
   for (let game = 0; game < times.length; game++) {
