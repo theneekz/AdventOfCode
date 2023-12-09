@@ -7,3 +7,4 @@ cd $dayNum
 cp -a ../../newDayTemplate/ ./
 touch input.txt
 touch test1.txt
+$SHELL
