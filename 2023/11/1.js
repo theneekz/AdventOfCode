@@ -124,12 +124,12 @@ function main() {
 
       for (let k = Math.min(xA, xB); k < Math.max(xA, xB); k++) {
         result++;
-        if (IS_PART_2 && cols.includes(k)) result += 999_999;
+        if (cols.includes(k)) result += IS_PART_2 ? 999_999 : 1;
       }
 
       for (let k = Math.min(yA, yB); k < Math.max(yA, yB); k++) {
         result++;
-        if (IS_PART_2 && rows.includes(k)) result += 999_999;
+        if (rows.includes(k)) result += IS_PART_2 ? 999_999 : 1;
       }
     }
   }
