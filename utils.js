@@ -11,8 +11,8 @@ const getInputArray = (directory, filename = "/input.txt") => {
   return inputArr;
 };
 
-const print = (input) => {
-  console.log(JSON.stringify(input, null, 2));
+const print = (input, space = 2) => {
+  console.log(JSON.stringify(input, null, space));
 };
 
 module.exports = { getInputArray, getInput, print };
