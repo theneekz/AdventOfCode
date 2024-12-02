@@ -95,31 +95,13 @@ So, the lowest location number in this example is 35.
 What is the lowest location number that corresponds to any of the initial seed numbers?
 
 Your puzzle answer was 510109797.
-
---- Part Two ---
-Everyone will starve if you only plant such a small number of seeds. Re-reading the almanac, it looks like the seeds: line actually describes ranges of seed numbers.
-
-The values on the initial seeds: line come in pairs. Within each pair, the first value is the start of the range and the second value is the length of the range. So, in the first line of the example above:
-
-seeds: 79 14 55 13
-This line describes two ranges of seed numbers to be planted in the garden. The first range starts with seed number 79 and contains 14 values: 79, 80, ..., 91, 92. The second range starts with seed number 55 and contains 13 values: 55, 56, ..., 66, 67.
-
-Now, rather than considering four seed numbers, you need to consider a total of 27 seed numbers.
-
-In the above example, the lowest location number can be obtained from seed number 82, which corresponds to soil 84, fertilizer 84, water 84, light 77, temperature 45, humidity 46, and location 46. So, the lowest location number is 46.
-
-Consider all of the initial seed numbers listed in the ranges on the first line of the almanac. What is the lowest location number that corresponds to any of the initial seed numbers?
-
-
 */
 const { getInput } = require("../../utils");
 const start = Date.now();
 
-// TODO: fix
-const IS_PART_TWO = true;
-
 function main() {
   const input = getInput(__dirname);
+
   let { seedsInput, maps } = parseInput(input);
 
   maps = maps.map((x) => convert(x));
@@ -127,7 +109,6 @@ function main() {
   let results = [];
 
   for (const seed of seedsInput) {
-    console.log({ seed });
     let i = Number(seed);
     let queue = [...maps];
     while (queue.length) {
@@ -159,18 +140,6 @@ const parseInput = (inputStr) => {
     humidityToLocationInput,
   ] = inputStr;
 
-  let part2 = [];
-
-  seedsInput[0]
-    .split(": ")[1]
-    .match(/(\d+ \d+)/g)
-    .forEach((pair) => {
-      const [start, range] = pair.split(" ").map((x) => Number(x));
-      for (let i = 0; i < range; i++) {
-        part2.push(start + i);
-      }
-    });
-
   seedsInput = seedsInput[0].split(": ")[1].split(" ");
 
   seedToSoilInput.shift();
@@ -181,10 +150,8 @@ const parseInput = (inputStr) => {
   temperatureToHumidityInput.shift();
   humidityToLocationInput.shift();
 
-  // fails here
-  console.log("parsed input");
   return {
-    seedsInput: IS_PART_TWO ? part2 : seedsInput,
+    seedsInput,
     maps: [
       seedToSoilInput,
       soilToFertilizerInput,
