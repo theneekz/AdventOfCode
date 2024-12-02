@@ -1,18 +1,18 @@
 const fs = require("fs");
 
 const getInput = (directory, filename = "/input.txt") => {
-  const input = fs.readFileSync(directory + filename, "utf8");
-  return input;
+  return fs.readFileSync(directory + filename, "utf8");
 };
 
 const getInputArray = (directory, filename = "/input.txt") => {
   const input = getInput(directory, filename);
-  const inputArr = input.split("\n");
-  return inputArr;
+  return input.split("\n");
 };
 
 const print = (input, space = 2) => {
   console.log(JSON.stringify(input, null, space));
 };
 
-module.exports = { getInputArray, getInput, print };
+const arrayEquals = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+module.exports = { getInputArray, getInput, print, arrayEquals };
