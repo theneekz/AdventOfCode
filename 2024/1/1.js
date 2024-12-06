@@ -37,6 +37,8 @@ Finally, the largest number in the left list is 4, while the largest number in t
 To find the total distance between the left list and the right list, add up the distances between all of the pairs you found. In the example above, this is 2 + 1 + 0 + 1 + 2 + 5, a total distance of 11!
 
 Your actual left and right lists contain many location IDs. What is the total distance between your lists?
+
+1603498
 */
 const { getInputArray } = require("../../utils");
 const start = Date.now();
