@@ -9,10 +9,18 @@ const getInputArray = (directory, filename = "/input.txt") => {
   return input.split("\n");
 };
 
-const print = (input, space = 2) => {
-  console.log(JSON.stringify(input, null, space));
+const print = (input, space = 2, asText = false) => {
+  if (asText) {
+    console.log("\n");
+    console.log(input.map((cols) => cols.join("")).join("\n"));
+    console.log("\n");
+  } else {
+    console.log(JSON.stringify(input, null, space));
+  }
 };
 
 const arrayEquals = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
-module.exports = { getInputArray, getInput, print, arrayEquals };
+const deepClone = (input) => JSON.parse(JSON.stringify(input));
+
+module.exports = { getInputArray, getInput, print, arrayEquals, deepClone };
