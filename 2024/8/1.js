@@ -93,12 +93,10 @@ function main() {
 const getAntinodesForChar = (char, input) => {
   const antennas = getCoordsForChar(char, input);
   let antiNodes = {};
-  // print(input, 0, true);
   for (let i = 0; i < antennas.length - 1; i++) {
     for (let j = i + 1; j < antennas.length; j++) {
       const antinodes = getAntinodesForPair(antennas[i], antennas[j], input);
       for (const coord of antinodes) {
-        // console.log(coord);
         antiNodes[coord] = true;
       }
     }
@@ -128,18 +126,14 @@ const getAntinodesForPair = (coordA, coordB, input) => {
     if (input[antiA[0]][antiA[1]]) {
       antinodes.push(antiA);
     }
-  } catch (e) {
-    // out of map bounds
-  }
+  } catch (e) {} // out of map bounds
   const antiB = [coordB[0] - rowDiff, coordB[1] - colDiff];
   try {
     if (input[antiB[0]][antiB[1]]) {
       antinodes.push(antiB);
     }
-  } catch (e) {
-    // out of map bounds
-  }
-  // console.log({ coordA, coordB, rowDiff, colDiff, antiA, antiB });
+  } catch (e) {} // out of map bounds
+
   return antinodes;
 };
 
