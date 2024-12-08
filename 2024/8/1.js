@@ -76,7 +76,7 @@ Calculate the impact of the signal. How many unique locations within the bounds 
 
 Your puzzle answer was 367.
 */
-const { getInputArray, print } = require("../../utils");
+const { getInputArray } = require("../../utils");
 const start = Date.now();
 
 function main() {
