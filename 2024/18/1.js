@@ -61,7 +61,7 @@ Simulate the first kilobyte (1024 bytes) falling onto your memory space. Afterwa
 
 Your puzzle answer was 286.
 */
-const { getInputArray, print } = require("../../utils");
+const { getInputArray } = require("../../utils");
 const start = Date.now();
 
 function main() {
