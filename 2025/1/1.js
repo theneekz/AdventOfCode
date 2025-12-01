@@ -114,16 +114,16 @@ function main() {
           current = 99
         }
       }
-      // Part 2
-      if (current === 0) {
-        counter++
-      }
+      // Part 2 (16ms)
+      // if (current === 0) {
+      //   counter++
+      // }
     }
 
-    // Part 1
-    // if (current === 0) {
-    //   counter++
-    // }
+    // Part 1 (14ms)
+    if (current === 0) {
+      counter++
+    }
   }
   return counter
 }
