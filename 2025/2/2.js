@@ -20,6 +20,8 @@ From the same example as before:
 Adding up all the invalid IDs in this example produces 4174379265.
 
 What do you get if you add up all of the invalid IDs using these new rules?
+
+Your puzzle answer was 45283684555.
 */
 const { getInput } = require("../../utils");
 const start = Date.now();
