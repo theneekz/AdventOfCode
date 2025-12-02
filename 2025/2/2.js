@@ -77,3 +77,4 @@ function main() {
 console.log(main());
 
 console.log("Time", Date.now() - start, "ms");
+// 546 ms
