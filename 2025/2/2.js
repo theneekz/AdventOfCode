@@ -34,42 +34,26 @@ function main() {
   for (const range of input) {
     const [start, end] = range.split("-").map(Number);
 
-    for (let i = start; i <= end; i++) {
+    for (let current = start; current <= end; current++) {
       for (
         let windowSize = 1;
-        windowSize <= i.toString().length / 2;
+        windowSize <= current.toString().length / 2;
         windowSize++
       ) {
-        const windowAStart = 0;
-        let windowAEnd = windowSize;
-        let windowBStart = windowSize;
-        let windowBEnd = windowBStart + windowSize;
-
-        let windowA = i.toString().slice(windowAStart, windowAEnd);
-        let windowB = i.toString().slice(windowBStart, windowBEnd);
-
-        let foundInvalid = false;
-
-        while (windowBEnd <= i.toString().length) {
-          if (windowA !== windowB) {
-            windowSize++;
-            windowAEnd = windowSize;
-            windowBStart = windowSize;
-            windowBEnd = windowBStart + windowSize;
-            windowA = i.toString().slice(windowAStart, windowAEnd);
-            windowB = i.toString().slice(windowBStart, windowBEnd);
-          } else if (windowBEnd === i.toString().length) {
-            result += i;
-            foundInvalid = true;
+        let windowA = current.toString().slice(0, windowSize);
+        let allWindowsMatch = true;
+        for (let i = 0; i < current.toString().length; i += windowSize) {
+          const sequence = current.toString().slice(i, i + windowSize);
+          if (sequence !== windowA) {
+            allWindowsMatch = false;
             break;
-          } else {
-            windowBStart += windowSize;
-            windowBEnd = windowBStart + windowSize;
-            windowB = i.toString().slice(windowBStart, windowBEnd);
           }
         }
-
-        if (foundInvalid) break;
+        // 655 ms
+        if (allWindowsMatch) {
+          result += current;
+          break;
+        }
       }
     }
   }
@@ -79,4 +63,4 @@ function main() {
 console.log(main());
 
 console.log("Time", Date.now() - start, "ms");
-// 546 ms
+// 655 ms
