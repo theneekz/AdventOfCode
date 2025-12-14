@@ -45,41 +45,39 @@ const start = Date.now();
 
 function main() {
   const input = getInputArray(__dirname, "/input.txt");
-  const grid = input.map(row => row.split(''))
+  const grid = input.map((row) => row.split(""));
 
   // const debugGrid = deepClone(grid);
 
   let result = 0;
-  
+
   for (let row = 0; row < grid.length; row++) {
     for (let col = 0; col < grid[row].length; col++) {
-      if (grid[row][col] !== '@') {
-        continue
+      if (grid[row][col] !== "@") {
+        continue;
       }
       let neighbors = [
         grid[row - 1]?.[col - 1],
         grid[row - 1]?.[col],
-        grid[row - 1]?.[col+1],
+        grid[row - 1]?.[col + 1],
         grid[row]?.[col - 1],
-        grid[row]?.[col+1],
+        grid[row]?.[col + 1],
         grid[row + 1]?.[col - 1],
         grid[row + 1]?.[col],
-        grid[row + 1]?.[col+1],
-      ]
+        grid[row + 1]?.[col + 1],
+      ];
 
-      const canAccess = neighbors.filter(char => char === '@').length < 4;
-      result += canAccess
+      const canAccess = neighbors.filter((char) => char === "@").length < 4;
+      result += canAccess;
 
       // if (canAccess) {
-      //   debugGrid[col][row] = 'x'
+      //   debugGrid[row][col] = "x";
       // }
     }
   }
-  // print(debugGrid, 0, true)
-  return result
+  // print(debugGrid, 0, true);
+  return result;
 }
-
-
 
 console.log(main());
 
