@@ -27,18 +27,39 @@ To check their work, cephalopod students are given the grand total of adding tog
 Of course, the actual worksheet is much wider. You'll need to make sure to unroll it completely so that you can read the problems clearly.
 
 Solve the problems on the math worksheet. What is the grand total found by adding together all of the answers to the individual problems?
+
+Your puzzle answer was 4693419406682.
 */
 const { getInputArray } = require("../../utils");
 const start = Date.now();
 
 function main() {
-  const input = getInputArray(__dirname, "/test1.txt").map((l) =>
+  const input = getInputArray(__dirname, "/input.txt").map((l) =>
     l.split(/\s+/).filter(Boolean)
   );
+  const operations = input.pop();
 
   let total = 0;
+
+  for (let col = 0; col < operations.length; col++) {
+    let colValues = [];
+    for (let row = 0; row < input.length; row++) {
+      if (input[row][col] !== undefined) {
+        colValues.push(Number(input[row][col]));
+      }
+    }
+    let colResult = 0;
+    if (operations[col] === "+") {
+      colResult = colValues.reduce((a, b) => a + b, 0);
+    } else if (operations[col] === "*") {
+      colResult = colValues.reduce((a, b) => a * b, 1);
+    }
+    total += colResult;
+  }
+
+  return total;
 }
 
 console.log(main());
 
-console.log("Time", Date.now() - start, "ms");
+console.log("Time", Date.now() - start, "ms"); // 14 ms
