@@ -21,6 +21,8 @@ In 818181911112111, the joltage 888911112111 is produced by turning on everythin
 The total output joltage is now much larger: 987654321111 + 811111111119 + 434234234278 + 888911112111 = 3121910778619.
 
 What is the new total output joltage?
+
+Your puzzle answer was 171518260283767.
 */
 const { getInputArray } = require("../../utils");
 const start = Date.now();
@@ -30,32 +32,45 @@ function main() {
   let result = 0;
 
   for (const line of input) {
-    let leftIndex = 0;
-    let rightIndex = 1;
-    let max = Number(line[leftIndex] + line[rightIndex]);
+    // Make array for all digits
+    let allDigits = new Array(12).fill({ value: -1, originalIndex: -1 });
+    // Make an index for searching left to right
+    let index = 0;
+    while (index < line.length) {
+      // Check length of rest of line to determine which digit it could replace
+      let remainingLength = line.length - index;
+      let replacementIndex =
+        12 - remainingLength > 0 ? 12 - remainingLength : 0;
+      let current = Number(line[index]);
 
-    while (rightIndex < line.length) {
-      let current = Number(line[rightIndex]);
-
-      if (current > Number(line[leftIndex]) && rightIndex < line.length - 1) {
-        // New max left digit
-        leftIndex = rightIndex;
-        rightIndex = leftIndex + 1;
-        current = Number(line[rightIndex]);
-        max = Number(line[leftIndex] + line[rightIndex]);
-      } else if (current >= max % 10) {
-        // New max right digit
-        max = Number(line[leftIndex] + current);
-        rightIndex++;
-      } else {
-        rightIndex++;
+      for (let i = replacementIndex; i < 12; i++) {
+        const foundGreaterValue = current > allDigits[i].value;
+        const canReplace = allDigits[i].originalIndex < index;
+        const hasEnoughLength = line.length - index >= 12 - i;
+        if (foundGreaterValue && canReplace && hasEnoughLength) {
+          replacementIndex = i;
+          break;
+        }
       }
+
+      if (current > allDigits[replacementIndex].value) {
+        // Get index to jump to after replacement
+        let endIndex = index + (12 - replacementIndex);
+        allDigits[replacementIndex] = { value: current, originalIndex: index };
+        allDigits = allDigits.slice(0, replacementIndex + 1).concat(
+          line
+            .slice(index + 1, endIndex)
+            .split("")
+            .map((v, i) => ({ value: Number(v), originalIndex: index + 1 + i }))
+        );
+      }
+      index++;
     }
-    result += max;
+    result += Number(allDigits.map((x) => x.value).join(""));
   }
   return result;
 }
 
 console.log(main());
 
-console.log("Time", Date.now() - start, "ms"); // 20 ms
+console.log("Time", Date.now() - start, "ms"); // 28 ms
