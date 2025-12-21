@@ -140,7 +140,7 @@ function main() {
       .split("")
       .map((c, i) => (c === "^" ? i : -1))
       .filter((x) => x > -1);
-    // console.log({ beams, splitters, row: input[row] });
+
     if (!splitters.length) {
       continue;
     }
@@ -158,12 +158,15 @@ function main() {
         nextBeams.push(beam);
       }
     }
-    beams.push(...nextBeams);
-    beams = beams.filter((x, i) => beams.indexOf(x) === i);
+    for (const beam of nextBeams) {
+      if (!beams.includes(beam)) {
+        beams.push(beam);
+      }
+    }
   }
   return splits;
 }
 
 console.log(main());
 
-console.log("Time", Date.now() - start, "ms"); // 7ms
+console.log("Time", Date.now() - start, "ms"); // 6ms

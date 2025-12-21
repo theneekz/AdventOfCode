@@ -81,19 +81,19 @@ function main() {
 
   for (let row = 1; row < input.length; row++) {
     let nextBeams = [];
-    let nextTimelines = [...timelines];
     let splitters = input[row]
       .split("")
       .map((c, i) => (c === "^" ? i : -1))
       .filter((x) => x > -1);
+
     if (!splitters.length) {
       continue;
     }
     for (const beam of beams) {
       if (splitters.includes(beam)) {
-        nextTimelines[beam - 1] += nextTimelines[beam];
-        nextTimelines[beam + 1] += nextTimelines[beam];
-        nextTimelines[beam] = 0;
+        timelines[beam - 1] += timelines[beam];
+        timelines[beam + 1] += timelines[beam];
+        timelines[beam] = 0;
         beams = beams.filter((x) => x !== beam);
         if (!nextBeams.includes(beam - 1)) {
           nextBeams.push(beam - 1);
@@ -105,13 +105,11 @@ function main() {
         nextBeams.push(beam);
       }
     }
-
     for (const beam of nextBeams) {
       if (!beams.includes(beam)) {
         beams.push(beam);
       }
     }
-    timelines = [...nextTimelines];
   }
   return timelines.reduce((p, c) => p + c);
 }
@@ -156,4 +154,4 @@ function main() {
 
 console.log(main());
 
-console.log("Time", Date.now() - start, "ms"); // 12ms
+console.log("Time", Date.now() - start, "ms"); // 6ms
