@@ -117,7 +117,7 @@ const getClosestUnconnected = (jBoxes) => {
   for (let i = 0; i < jBoxes.length; i++) {
     let box = jBoxes[i];
 
-    for (let j = 0; j < jBoxes.length; j++) {
+    for (let j = i + 1; j < jBoxes.length; j++) {
       if (i === j) {
         continue;
       }
@@ -137,4 +137,4 @@ const getClosestUnconnected = (jBoxes) => {
 
 console.log(main());
 
-console.log("Time", Date.now() - start, "ms"); //56488ms! TODO: fix
+console.log("Time", Date.now() - start, "ms"); //31414ms! TODO: fix
