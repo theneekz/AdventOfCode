@@ -55,6 +55,7 @@ Your puzzle answer was 122430.
 const { getInputArray } = require("../../utils");
 const start = Date.now();
 const TEST = false;
+const CONNECTIONS_TO_MAKE = TEST ? 10 : 1000;
 
 function main() {
   const input = getInputArray(
@@ -62,79 +63,60 @@ function main() {
     TEST ? "/test1.txt" : "/input.txt"
   ).map((l) => l.split(",").map(Number));
 
-  const jBoxes = input.map((coords) => new JBox(...coords));
-
-  let circuits = jBoxes.map((box) => [box.coordString]);
-
-  for (let i = 0; i < (TEST ? 10 : 1000); i++) {
-    // const startA = Date.now();
-    const [boxA, boxB] = getClosestUnconnected(jBoxes);
-    // console.log("finished get closest in: ", Date.now() - startA); // ~50ms TODO fix
-    boxA.connections.push(boxB.coordString);
-    boxB.connections.push(boxA.coordString);
-
-    const boxACircuitIndex = circuits.findIndex((c) =>
-      c.includes(boxA.coordString)
-    );
-    const boxBCircuitIndex = circuits.findIndex((c) =>
-      c.includes(boxB.coordString)
-    );
-    if (boxACircuitIndex === boxBCircuitIndex) {
-      continue;
-    }
-
-    circuits[boxACircuitIndex] = [
-      ...new Set([
-        ...circuits[boxACircuitIndex],
-        ...(boxBCircuitIndex > -1 ? circuits[boxBCircuitIndex] : []),
-      ]),
-    ];
-
-    circuits = circuits.filter((v, i) => i !== boxBCircuitIndex);
-  }
-
-  circuits.sort((a, b) => b.length - a.length);
-  return circuits[0].length * circuits[1].length * circuits[2].length;
-}
-
-class JBox {
-  connections = [];
-  constructor(x, y, z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    this.coordString = `${x},${y},${z}`;
-  }
-
-  getDistance(box) {
-    return Math.hypot(this.x - box.x, this.y - box.y, this.z - box.z);
-  }
-}
-
-const getClosestUnconnected = (jBoxes) => {
-  let min = Infinity;
-  let boxes = [];
-  for (let i = 0; i < jBoxes.length; i++) {
-    let box = jBoxes[i];
-
-    for (let j = i + 1; j < jBoxes.length; j++) {
-      if (i === j) {
-        continue;
-      }
-      let otherBox = jBoxes[j];
-      if (box.connections.includes(otherBox.coordString)) {
-        continue;
-      }
-      let distance = box.getDistance(otherBox);
-      if (distance < min) {
-        min = distance;
-        boxes = [box, otherBox];
-      }
+  // Compute all edges
+  const edges = [];
+  for (let i = 0; i < input.length; i++) {
+    const [xi, yi, zi] = input[i];
+    for (let j = i + 1; j < input.length; j++) {
+      const [xj, yj, zj] = input[j];
+      // 30ms faster than Math.hypot
+      const d = (xi - xj) ** 2 + (yi - yj) ** 2 + (zi - zj) ** 2;
+      edges.push({ i, j, d });
     }
   }
-  return boxes;
-};
+  edges.sort((a, b) => a.d - b.d);
+
+  // Each index is the junction box and the value is the parent connection
+  let circuits = new Array(input.length).fill(0).map((_, i) => i);
+
+  // A more complete count of the above. Use this to track sizes instead of the
+  // above, so that all child jboxes don't need to be updated on every connection
+  let circuitSizes = new Array(input.length).fill(1);
+
+  // Gets the head jbox for a circuit & updates if necessary
+  const find = (x) => {
+    // Is it's own only connection or the 'head' jbox
+    if (circuits[x] == x) {
+      return x;
+    }
+    // Update to the 'head' jbox if necessary
+    circuits[x] = find(circuits[x]);
+    return circuits[x];
+  };
+
+  // Connects two jboxes & updates the circuit size changes
+  const connect = (a, b) => {
+    a = find(a);
+    b = find(b);
+    if (a === b) return;
+    if (circuitSizes[a] < circuitSizes[b]) {
+      [a, b] = [b, a];
+    }
+    circuits[b] = a;
+    // Bigger circuit consumes the smaller
+    circuitSizes[a] += circuitSizes[b];
+    // Smaller circuit will no longer be used, just for posterity
+    circuitSizes[b] = 0;
+  };
+
+  for (let i = 0; i < CONNECTIONS_TO_MAKE; i++) {
+    connect(edges[i].i, edges[i].j);
+  }
+
+  circuitSizes.sort((a, b) => b - a);
+  return circuitSizes[0] * circuitSizes[1] * circuitSizes[2];
+}
 
 console.log(main());
 
-console.log("Time", Date.now() - start, "ms"); //31414ms! TODO: fix
+console.log("Time", Date.now() - start, "ms"); // 405ms
