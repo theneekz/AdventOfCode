@@ -69,7 +69,7 @@ function main() {
     const [xi, yi, zi] = input[i];
     for (let j = i + 1; j < input.length; j++) {
       const [xj, yj, zj] = input[j];
-      // 30ms faster than Math.hypot
+      // 30ms faster than Math.hypot (doesn't seem to need the Math.sqrt)
       const d = (xi - xj) ** 2 + (yi - yj) ** 2 + (zi - zj) ** 2;
       edges.push({ i, j, d });
     }
