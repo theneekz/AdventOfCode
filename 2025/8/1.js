@@ -120,3 +120,5 @@ function main() {
 console.log(main());
 
 console.log("Time", Date.now() - start, "ms"); // 405ms
+
+// union-find / disjoint set solution
