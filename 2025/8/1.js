@@ -105,7 +105,6 @@ function main() {
     circuits[b] = a;
     // Bigger circuit consumes the smaller
     circuitSizes[a] += circuitSizes[b];
-    // Smaller circuit will no longer be used, just for posterity
     circuitSizes[b] = 0;
   };
 
